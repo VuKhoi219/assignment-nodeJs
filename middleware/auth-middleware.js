@@ -13,36 +13,8 @@ const authenticateToken = async (req, res, next) => {
     next();
   });
 };
+
 const check = async (req, res, next) => {
-  try {
-    let user = null;
-    const userId = req.user._id;
-    user = await User.find({ _id: userId }, { password: -1 }).populate({
-      path: "roles",
-      populate: {
-        path: "permissions",
-      },
-    });
-    let userPermissions = user[0].roles.reduce((acc,role)=>{
-      role.permissions.forEach(permission => {
-        acc.push({url : permission.url, method : permission.method})
-        
-      });
-      return acc
-    },[])
-    console.log(userPermissions);
-    const hasPermission = userPermissions.some(
-      (p) => p.url === req.path && p.method === req.method
-    );
-    if (!hasPermission)
-      return res.status(403).json({ message: "Không có quyền truy cập" });
-    next();
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Có lỗi xảy ra" });
-  }
-};
-const check2 = async (req, res, next) => {
   try {
     let user = null;
     const userId = req.user._id;
@@ -66,15 +38,13 @@ const check2 = async (req, res, next) => {
     if (!hasPermission)
       return res.status(403).json({ message: "Không có quyền truy cập" });
     next();
-
   }catch(e){
     console.log(e)
     return res.status(500).json({ message: "Có lỗi xảy ra" });
   }
 }
 const checkPermission = async (req, res, next) => {
-  // return await check(req, res, next);
-  return await check2(req, res, next);  
+  return await check(req, res, next);
 };
 module.exports = {
   authenticateToken,

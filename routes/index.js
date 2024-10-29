@@ -30,7 +30,7 @@ router.get('/api/v1/user/',authenticateToken,checkPermission, function(req, res,
 router.put('/api/v1/admin/:id',authenticateToken,checkPermission,async function(req, res, next) {
   await userController.updateUser( req, res );
 })
-router.delete('/api/v1/admin/:id', async function(req, res, next){
+router.delete('/api/v1/admin/:id',authenticateToken,checkPermission, async function(req, res, next){
   await userController.deleteUser( req, res );
 })
 router.post('/api/v1/admin/:role',authenticateToken,checkPermission, async function(req, res, next) {
