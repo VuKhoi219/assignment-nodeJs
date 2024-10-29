@@ -61,7 +61,7 @@ const check2 = async (req, res, next) => {
     },[])
     console.log(userPermissions);
     const hasPermission = userPermissions.some(
-      (p) => p.url.indexOf(req.url) && p.method === req.method
+      (p) => req.url.includes(p.url) && p.method === req.method
     );
     if (!hasPermission)
       return res.status(403).json({ message: "Không có quyền truy cập" });
@@ -73,8 +73,8 @@ const check2 = async (req, res, next) => {
   }
 }
 const checkPermission = async (req, res, next) => {
-  return await check(req, res, next);
-  // return await check2(req, res, next);  
+  // return await check(req, res, next);
+  return await check2(req, res, next);  
 };
 module.exports = {
   authenticateToken,

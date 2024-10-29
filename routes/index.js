@@ -27,13 +27,13 @@ router.get('/api/v1/editor' ,authenticateToken,checkPermission, function(req, re
 router.get('/api/v1/user/',authenticateToken,checkPermission, function(req, res, next) {
   res.send("đây là trang user");
 })
-router.put('/api/v1/admin/:id',async function(req, res, next) {
+router.put('/api/v1/admin/:id',authenticateToken,checkPermission,async function(req, res, next) {
   await userController.updateUser( req, res );
 })
 router.delete('/api/v1/admin/:id', async function(req, res, next){
   await userController.deleteUser( req, res );
 })
-router.post('/api/v1/admin/:role', async function(req, res, next) {
+router.post('/api/v1/admin/:role',authenticateToken,checkPermission, async function(req, res, next) {
   await userController.createAdmin( req, res );
 })
 module.exports = router;

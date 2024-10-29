@@ -13,22 +13,18 @@ module.exports = {
         return res.status(401).json({ message: "Invalid password" });
       res.cookie("token", result.token, { httpOnly: true });
       console.log(result.result.roles);
-      if (
-        result.result.roles
-          .map((role) => role.toString())
-          .includes("671f62711bbab74598c72cb8")
-      ) {
-        return res.redirect("/api/admin");
-      }
+      let findByRoleId = await userServices.findByRoleId(result.result.roles)
+      console.log("vvao đây")
+      console.log(findByRoleId)
 
-      if (
-        result.result.roles
-          .map((role) => role.toString())
-          .includes("671f62711bbab74598c72cb9")
-      ) {
-        return res.redirect("/api/editor");
+      if(!findByRoleId) return res.json({message : "Lỗi "})
+      if ( findByRoleId.name === "Admin") {
+        return res.redirect("/api/v1/admin");
       }
-      return res.redirect("/api/user");
+      if ( findByRoleId.name === "Editor") {
+        return res.redirect("/api/v1/editor");
+      }
+      return res.redirect("/api/v1/user");
     } catch (error) {
       console.log(error);
       res.send("Lỗi hệ thống");
@@ -38,14 +34,12 @@ module.exports = {
     try {
       if (!req.body)
         return res.status(400).json({ message: "Không thấy not found" });
-      // 671f62711bbab74598c72cbc user
-      //  671f62711bbab74598c72cb8 admin
-      // 671f62711bbab74598c72cb9 editor
-      req.body.roles = "671f62711bbab74598c72cbc"; // mặc định là user
+
+      let _idRole = await userServices.findByRoleName("User")
+      req.body.roles = _idRole; // mặc định là user
       req.body.status = 0;
       console.log(req.body);
       const result = await userServices.createUser(req.body);
-      // console.log(result)
       res.redirect("/login");
       // res.json(result);
     } catch (error) {
@@ -55,19 +49,21 @@ module.exports = {
   },
   createAdmin: async (req, res) => {
     try {
+      console.log(req.body)
       if (!req.body)
         return res.status(400).json({ message: "Không có dữ liệu" });
-      // 671f62711bbab74598c72cbc user
-      //  671f62711bbab74598c72cb8 admin
-      // 671f62711bbab74598c72cb9 editor
       console.log(req.params.role)
+      let _idRole;
       if( req.params.role === "admin" ){
-        req.body.roles = "671f62711bbab74598c72cb8";
+        _idRole = await userServices.findByRoleName("Admin") 
+        req.body.roles = _idRole;
       }
       else if(req.params.role === "editor"){
-        req.body.roles = "671f62711bbab74598c72cb9";
+        _idRole = await userServices.findByRoleName("Editor")
+        req.body.roles =  _idRole; ;
       } else{
-        req.body.roles = "671f62711bbab74598c72cbc";
+        _idRole = await userServices.findByRoleName("User")
+        req.body.roles = _idRole;
       }
       req.body.status = 0;
       console.log(req.body);
@@ -80,17 +76,14 @@ module.exports = {
   },
   updateUser: async (req, res) => {
     try {
-      const id = req.body.id;
+      const id = req.params.id;
       const result = await userServices.find(id);
       if (!result)
         return res.status(400).json({ message: "Không thể not found" });
       if (!req.body)
         return res.status(400).json({ message: "Không thể not found" });
-      console.log(result)
-      console.log(req.body)
-      const result2 = await userServices.updateUser(req.body)
-      // console.log(result)
-      
+
+      const result2 = await userServices.updateUser(id,req.body)
       res.json(result2);
     } catch (error) {
       console.log(error);
@@ -99,7 +92,7 @@ module.exports = {
   },
   deleteUser: async (req, res) => {
     try {
-      const id = req.body.id;
+      const id = req.params.id;
       const result = await userServices.find(id);
       if (!result)
         return res.status(400).json({ message: "Không thể not found" });

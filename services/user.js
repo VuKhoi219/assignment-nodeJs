@@ -29,9 +29,9 @@ module.exports = {
     );
     return { result, token };
   },
-  updateUser: async (user) => {
+  updateUser: async (id,user) => {
     if (!user) return null;
-    const savedUser = await userRepo.updateUser(user);
+    const savedUser = await userRepo.updateUser(id,user);
     return savedUser;
   },
   deleteUser : async (id) => {
@@ -44,9 +44,16 @@ module.exports = {
     const user = await userRepo.findbyId(id);
     return user;
   },
-  // findByRoleName: async (name) => {
-  //   if (!name) return null;
-  //   const result = await userRepo.findByRoleName(name);
-  //   return result;
-  // }
+  findByRoleName: async (name) => {
+    if (!name) return null;
+    const result = await userRepo.findByRoleName(name);
+    return result;
+  },
+  findByRoleId: async (id) => {
+    if (!id) return null;
+    const result = await userRepo.findByRoleId(id);
+
+    return result;
+  }
 };
+
