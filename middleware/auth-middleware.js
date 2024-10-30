@@ -31,7 +31,6 @@ const check = async (req, res, next) => {
       });
       return acc
     },[])
-    console.log(userPermissions);
     const hasPermission = userPermissions.some(
       (p) => req.url.includes(p.url) && p.method === req.method
     );

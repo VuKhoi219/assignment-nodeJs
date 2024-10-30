@@ -12,11 +12,7 @@ module.exports = {
       if (result === 401)
         return res.status(401).json({ message: "Invalid password" });
       res.cookie("token", result.token, { httpOnly: true });
-      console.log(result.result.roles);
       let findByRoleId = await userServices.findByRoleId(result.result.roles)
-      console.log("vvao đây")
-      console.log(findByRoleId)
-
       if(!findByRoleId) return res.json({message : "Lỗi "})
       if ( findByRoleId.name === "Admin") {
         return res.redirect("/api/v1/admin");
@@ -38,7 +34,6 @@ module.exports = {
       let _idRole = await userServices.findByRoleName("User")
       req.body.roles = _idRole; // mặc định là user
       req.body.status = 0;
-      console.log(req.body);
       const result = await userServices.createUser(req.body);
       res.redirect("/login");
       // res.json(result);
@@ -49,10 +44,8 @@ module.exports = {
   },
   createAdmin: async (req, res) => {
     try {
-      console.log(req.body)
       if (!req.body)
         return res.status(400).json({ message: "Không có dữ liệu" });
-      console.log(req.params.role)
       let _idRole;
       if( req.params.role === "admin" ){
         _idRole = await userServices.findByRoleName("Admin") 
@@ -66,7 +59,6 @@ module.exports = {
         req.body.roles = _idRole;
       }
       req.body.status = 0;
-      console.log(req.body);
       const result = await userServices.createUser(req.body);
       res.json(result);
     } catch (err) {

@@ -25,7 +25,7 @@
         align-content: center;
         text-align: center;
         border-radius: 10px ;
-        height: 100vh; /* căn giữa form theo chiều dọc */
+        height: 100vh; 
         color: #fff;
     }
     #form {
@@ -100,9 +100,10 @@
             </div>
             <div class="content">
               <label for="name">User name : </label>
-              <input type="text" placeholder="Enter your user" id="name" name = "name"/>
+              <input type="text" placeholder="Enter your name" id="name" name = "name" required/>
               <label for="password">Password</label>
-              <input type="text" id="password"  name="password"/>
+              <input type="password" id="password"  name="password"  required/>
+
               <button type="submit">Login</button>
             </div>
             <div class="signup">
